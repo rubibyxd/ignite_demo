@@ -8,9 +8,10 @@ const palette = {
   neutral500: "#978F8A",
   neutral600: "#564E4A",
   neutral700: "#3C3836",
-  neutral800: "#191015",
+  neutral800: "#333",
   neutral900: "#000000",
 
+  primary: "#be9942",
   primary100: "#F4E0D9",
   primary200: "#E8C1B4",
   primary300: "#DDA28E",
@@ -67,7 +68,7 @@ export const colors = {
   /**
    * The main tinting color.
    */
-  tint: palette.primary500,
+  tint: palette.primary,
   /**
    * A subtle color used for lines.
    */
@@ -81,4 +82,6 @@ export const colors = {
    *
    */
   errorBackground: palette.angry100,
+  tabBarBackground: palette.neutral100,
+  primaryColor: palette.primary,
 }
