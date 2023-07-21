@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-color-literals */
+/* eslint-disable react-native/no-inline-styles */
 /**
  * The app navigator (formerly "AppNavigator" and "MainNavigator") is used for the primary
  * navigation flows of your app.
@@ -13,13 +15,14 @@ import {
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
 import React from "react"
-import { useColorScheme } from "react-native"
+import { useColorScheme, View, StyleSheet, Image  } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
 import { useStores } from "../models" // @demo remove-current-line
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator" // @demo remove-current-line
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
+import LinearGradient from 'react-native-linear-gradient';
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -48,6 +51,40 @@ export type AppStackParamList = {
  */
 const exitRoutes = Config.exitRoutes
 
+function CustomHeaderBackground ({ children = null }) {
+  // const { options, route, navigation } = props;
+  return (
+    <LinearGradient
+      start={{x: 0, y: 0}} 
+      end={{x: 1, y: 0}}
+      colors={['#301F0B', '#E8C36B', '#301F0B']} // 使用線性漸變的顏色
+      style={styles.linearGradient}
+    >
+      { children || null }
+    </LinearGradient>
+  );
+}
+
+// 樣式
+const styles = StyleSheet.create({
+  linearGradient: {
+    color: colors.tabBarBackground,
+    margin: 0,
+    paddingLeft: 16,
+    paddingRight: 16,
+    width: '100%',
+  },
+  logo: {
+    display: 'flex',
+    height: 30,
+    margin: 0,
+    objectFit: 'contain',
+    paddingBottom: 30,
+    paddingTop: 30,
+    width: 100,
+  }
+});
+
 export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStackScreenProps<
   AppStackParamList,
   T
@@ -65,7 +102,24 @@ const AppStack = observer(function AppStack() {
   // @demo remove-block-end
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false, navigationBarColor: colors.background }}
+      screenOptions={{ 
+        headerShown: true, 
+        header: () => <View style={{ marginTop: 40}}>
+            <CustomHeaderBackground>
+              <View>
+                <Image
+                  style={styles.logo}
+                  source={require('../../assets/logo/logo.png')}
+                />
+              </View>
+              <View>
+                
+              </View>
+          </CustomHeaderBackground>
+        </View>,
+        headerBackVisible: false,
+        navigationBarColor: colors.background 
+      }}
       initialRouteName={isAuthenticated ? "Welcome" : "Login"} // @demo remove-current-line
     >
       {/* @demo remove-block-start */}

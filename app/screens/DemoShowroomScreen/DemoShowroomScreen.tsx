@@ -259,7 +259,7 @@ const $logoImage: ImageStyle = {
 const $logoContainer: ViewStyle = {
   alignSelf: "flex-start",
   justifyContent: "center",
-  height: 56,
+  height: 42,
   paddingHorizontal: spacing.lg,
 }
 
