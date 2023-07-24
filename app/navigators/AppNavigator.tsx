@@ -15,7 +15,7 @@ import {
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
 import React from "react"
-import { useColorScheme, View, StyleSheet, Image  } from "react-native"
+import { useColorScheme, View, StyleSheet, Image, ViewStyle, Text } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
 import { useStores } from "../models" // @demo remove-current-line
@@ -23,6 +23,9 @@ import { DemoNavigator, DemoTabParamList } from "./DemoNavigator" // @demo remov
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
 import LinearGradient from 'react-native-linear-gradient';
+import { Drawer } from 'react-native-drawer-layout';
+import { DrawerIconButton } from "app/screens/DemoShowroomScreen/DrawerIconButton"
+import { useSharedValue } from "react-native-reanimated"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -49,6 +52,7 @@ export type AppStackParamList = {
  * This is a list of all the route names that will exit the app if the back button
  * is pressed while in that screen. Only affects Android.
  */
+
 const exitRoutes = Config.exitRoutes
 
 function CustomHeaderBackground ({ children = null }) {
@@ -68,7 +72,7 @@ function CustomHeaderBackground ({ children = null }) {
 // 樣式
 const styles = StyleSheet.create({
   linearGradient: {
-    color: colors.tabBarBackground,
+    // color: colors.white,
     margin: 0,
     paddingLeft: 16,
     paddingRight: 16,
@@ -98,49 +102,84 @@ const AppStack = observer(function AppStack() {
   const {
     authenticationStore: { isAuthenticated },
   } = useStores()
+  const [open, setOpen] = React.useState(false);
+  const progress = useSharedValue(0)
+  
+  const toggleDrawer = () => {
+    if (!open) {
+      setOpen(true)
+    } else {
+      setOpen(false)
+    }
+  }
 
   // @demo remove-block-end
   return (
-    <Stack.Navigator
-      screenOptions={{ 
-        headerShown: true, 
-        header: () => <View style={{ marginTop: 40}}>
-            <CustomHeaderBackground>
-              <View>
-                <Image
-                  style={styles.logo}
-                  source={require('../../assets/logo/logo.png')}
-                />
-              </View>
-              <View>
-                
-              </View>
-          </CustomHeaderBackground>
-        </View>,
-        headerBackVisible: false,
-        navigationBarColor: colors.background 
-      }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"} // @demo remove-current-line
+    <Drawer
+    open={open}
+    onOpen={() => setOpen(true)}
+    onClose={() => setOpen(false)}
+    renderDrawerContent={() => {
+      return <Text>Drawer content</Text>;
+    }}
+    drawerPosition={"right"}
     >
-      {/* @demo remove-block-start */}
-      {isAuthenticated ? (
-        <>
-          {/* @demo remove-block-end */}
-          <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
-          {/* @demo remove-block-start */}
-          <Stack.Screen name="Demo" component={DemoNavigator} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={Screens.LoginScreen} />
-        </>
-      )}
-      {/* @demo remove-block-end */}
-      {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
-    </Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{ 
+          headerShown: true, 
+          header: () => 
+            <View>
+                <CustomHeaderBackground>
+                  <View style={$navbar}>
+                    <View>
+                      <Image
+                        style={styles.logo}
+                        source={require('../../assets/logo/logo.png')}
+                      />
+                    </View>
+                    <View>
+                      <DrawerIconButton onPress={toggleDrawer} {...{ open, progress }} />
+                    </View>
+                  </View>
+              </CustomHeaderBackground>
+            </View>
+          ,
+          headerBackVisible: false,
+          navigationBarColor: colors.background 
+        }}
+        initialRouteName={isAuthenticated ? "Welcome" : "Login"} // @demo remove-current-line
+      >
+        {/* @demo remove-block-start */}
+        {isAuthenticated ? (
+          <>
+            {/* @demo remove-block-end */}
+            <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
+            {/* @demo remove-block-start */}
+            <Stack.Screen name="Demo" component={DemoNavigator} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Screens.LoginScreen} />
+          </>
+        )}
+        {/* @demo remove-block-end */}
+        {/** 🔥 Your screens go here */}
+        {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+      </Stack.Navigator>
+    </Drawer>
   )
 })
+const $navbar: ViewStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  flexDirection: 'row',
+}
+
+// const $menuContainer: ViewStyle = {
+//   paddingBottom: spacing.xs,
+//   paddingTop: spacing.lg,
+// }
 
 export interface NavigationProps
   extends Partial<React.ComponentProps<typeof NavigationContainer>> {}
@@ -151,12 +190,12 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-      {...props}
-    >
-      <AppStack />
-    </NavigationContainer>
+      <NavigationContainer
+        ref={navigationRef}
+        theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        {...props}
+      >
+          <AppStack />
+      </NavigationContainer>
   )
 })

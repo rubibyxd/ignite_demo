@@ -47,7 +47,7 @@ export function DemoNavigator() {
       tabBarActiveTintColor: colors.text,
       tabBarInactiveTintColor: colors.text,
       tabBarLabelStyle: [$tabBarLabel, { color: navigation.isFocused() ? colors.primaryColor : colors.text }],
-      tabBarItemStyle: [$tabBarItem, { borderTopColor: navigation.isFocused() ? colors.primaryColor : colors.tabBarBackground }]
+      tabBarItemStyle: [$tabBarItem, { borderTopColor: navigation.isFocused() ? colors.primaryColor : colors.white }]
     })}
     >
       <Tab.Screen
@@ -109,7 +109,7 @@ export function DemoNavigator() {
 }
 
 const $tabBar: ViewStyle = {
-  backgroundColor: colors.tabBarBackground,
+  backgroundColor: colors.white,
   borderTopColor: colors.transparent,
 }
 
